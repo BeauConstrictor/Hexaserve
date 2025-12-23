@@ -1,0 +1,3 @@
+# Path Traversal Detected
+
+For security reasons, we can't let you visit that page.

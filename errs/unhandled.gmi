@@ -1,0 +1,5 @@
+# Internal Server Error
+
+Something has gone wrong in the server!
+
+We're not exactly sure what happened, so try refreshing the page.
