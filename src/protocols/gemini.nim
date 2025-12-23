@@ -38,7 +38,6 @@ proc handleClient(client: Socket, address: string) =
     error("[REQUEST/RESPONSE] " & err.msg)
   finally:
     client.close()
-  
 
 proc startServer() =
   let socket = newSocket()
