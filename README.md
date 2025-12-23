@@ -25,7 +25,7 @@ $ sudo ./serve
 
 NOTE: `./serve` requires sudo because some ports require special privileges to bind to
 
-This will build the project, create some empty log files and start the servers for every protocol. To disable a certain protocol, just delete its binary from the `bin/` directory.
+This will build the project, create an ssl certificate for your website and start the servers for every protocol. To disable a certain protocol, just delete its binary from the `bin/` directory.
 
 ## Contributing
 
