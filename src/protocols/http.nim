@@ -48,6 +48,11 @@ proc generateHtml(page: string): string =
   var lastLineWasAListItem = false
 
   for line in page.split("\n"):
+    if line.strip() == "": continue
+
+    if not lastLineWasAListItem and (line.startsWith("=> ") or line.startsWith("* ")):
+      article &= "<ul>\n"
+      lastLineWasAListItem = true
     if lastLineWasAListItem and not (line.startsWith("=> ") or line.startsWith("* ")):
       article &= "</ul>\n"
       lastLineWasAListItem = false
@@ -67,11 +72,11 @@ proc generateHtml(page: string): string =
     elif line.startsWith("### "):
       article &= "<h3>" & line[4..^1] & "</h3>\n"
     elif line.startsWith("=> "):
-      if not lastLineWasAListItem:
-        lastLineWasAListItem = true
-        article &= "<ul>\n"
       let parts = line.split(" ")
       article &= "<li><a href=\"" & parts[1] & "\">" & parts[2..^1].join(" ") & "</a></li>\n"
+    elif line.startsWith("* "):
+      let parts = line.split(" ")
+      article &= "<li>" & line[2..^1] & "</li>\n"
     else:
       article &= "<p>" & line & "</p>\n"
 
