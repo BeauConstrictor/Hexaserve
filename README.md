@@ -6,12 +6,14 @@ A minimal static web server that serves content over six different protocols
 
 These are the protocols that this server supports:
 
-- [ ] HTTP(S)
+- [ ] HTTP (port 8080 for now)
 - [x] Gemini
 - [ ] Gopher
 - [ ] Finger
 - [ ] FTP
-- [ ] SSH
+- [ ] Telnet
+
+Note that Hexaserve is still in a very early state and should not be used in production. All the servers are still single-threaded, so one slow client can completely block other requests. You have been warned.
 
 ## Getting Started
 
