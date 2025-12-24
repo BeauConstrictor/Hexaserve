@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$TITLE</title>
+
+    <style>
+        article {
+            max-width: 70ch;
+            margin: 30px;
+
+            text-align: justify;
+
+            margin: auto;
+            font-family: sans-serif;
+            line-height: 1.6em;
+
+            margin-top: 100px;
+            margin-bottom: 200px;
+        }
+
+        pre {
+            line-height: initial;
+            margin: 40px 0;
+        }
+
+        a {
+            padding: 20px 0;
+        }
+
+        @media (prefers-color-scheme: light) {
+            body {
+                background-color: #fbf1c7;
+                color: #3c3836;
+            }
+
+            a {
+                color: #458588;
+            }
+            a:visited {
+                color: #b16286;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #282828;
+                color: #ebdbb2;
+            }
+
+            a {
+                color: #458588;
+            }
+            a:visited {
+                color: #b16286;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <article>
+        $CONTENT
+    </article>
+</body>
+
+</html>
