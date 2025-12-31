@@ -98,7 +98,14 @@ proc handleInvalidMethod(client: AsyncSocket) {.async.} =
   ))
   client.close()
   
-proc generateHtml(page: string): string =
+proc generateHtml(unescaped: string): string =
+  var page = unescaped
+    .replace("&",  "&amp;")
+    .replace("<",  "&lt;")
+    .replace(">",  "&gt;")
+    .replace("\"", "&quot;")
+    .replace("'",  "&#39;")
+
   var article = ""
   var preformatted = false
   var lastLineWasAListItem = false
