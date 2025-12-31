@@ -1,4 +1,4 @@
-import std/[net, logging, strutils, tables, times, strformat]
+import std/[asyncnet, asyncdispatch, logging, strutils, tables, times]
 
 import ../content
 
@@ -12,9 +12,6 @@ type
 
 const
   htmlTemplate = staticRead("../template.html")
-  recvTimeout = 1000#ms
-
-
 
 var
   consoleLogger = newConsoleLogger(fmtStr="HTTP/$levelname ")
@@ -26,14 +23,16 @@ proc `$`(msg: HttpMessage): string =
     result &= key.toLowerAscii() & ": " & msg.header[key] & "\r\n"
   result &= "\r\n"
   result &= msg.body
-proc recvHttpMessage(client: Socket): HttpMessage =
-  result.startLine = client.recvLine(timeout=recvTimeout)
+
+proc recvHttpMessage(client: AsyncSocket): Future[HttpMessage] {.async.} =
+  result.startLine = await client.recvLine()
   while true:
-    let line = client.recvLine(timeout=recvTimeout)
+    let line = await client.recvLine()
     if line.strip() == "": break
     let parts = line.split(": ")
     if parts.len() < 2: raise newException(HttpError, "Malformed header")
-    result.header[parts[0].toLowerAscii()] = parts[1..^1].join(": ")
+    let (key, val) = (parts[0].toLowerAscii(), parts[1..^1].join(": "))
+    result.header[key] = val
   
   var contentLength: int = 0
   if result.header.hasKey("content-length"):
@@ -47,7 +46,7 @@ proc recvHttpMessage(client: Socket): HttpMessage =
   elif result.header.hasKey("transfer-encoding"):
     raise newException(HttpError, "Transfer-Encoding is unsupported")
   else:
-    result.body = client.recv(contentLength, timeout=recvTimeout)
+    result.body = await client.recv(contentLength)
 
 proc getStatusLine(status: statusCode): string =
   return case status:
@@ -59,9 +58,9 @@ proc getStatusLine(status: statusCode): string =
 proc getHttpTimestamp(): string =
   return now().utc().format("ddd, dd MMM yyyy hh:mm:ss") & " GMT"
 
-proc handleBadRequest(client: Socket) =
+proc handleBadRequest(client: AsyncSocket) {.async.} =
   let body = "Bad request."
-  client.send($HttpMessage(
+  await client.send($HttpMessage(
     startLine: "HTTP/1.1 400 Bad Request",
     header: {
       "Content-Type": "text/plain; charset=utf-8",
@@ -72,9 +71,9 @@ proc handleBadRequest(client: Socket) =
     body: body,
   ))
   client.close()
-proc handleInvalidVersion(client: Socket) =
+proc handleInvalidVersion(client: AsyncSocket) {.async.} =
   let body = "HTTP version not supported."
-  client.send($HttpMessage(
+  await client.send($HttpMessage(
     startLine: "HTTP/1.1 505 HTTP Version not Supported",
     header: {
       "Content-Type": "text/plain; charset=utf-8",
@@ -85,9 +84,9 @@ proc handleInvalidVersion(client: Socket) =
     body: body,
   ))
   client.close()
-proc handleInvalidMethod(client: Socket) =
+proc handleInvalidMethod(client: AsyncSocket) {.async.} =
   let body = "Method not allowed."
-  client.send($HttpMessage(
+  await client.send($HttpMessage(
     startLine: "HTTP/1.1 405 Method not Allowed",
     header: {
       "Content-Type": "text/plain; charset=utf-8",
@@ -137,22 +136,25 @@ proc generateHtml(page: string): string =
     else:
       article &= "<p>" & line & "</p>\n"
 
+    if lastLineWasAListItem:
+      article &= "</ul>\n"
+
   result = htmlTemplate.replace("$CONTENT", article)
   result = result.replace("$TITLE", page.split("\n")[0].replace("# ", ""))
 
-proc handleClient(client: Socket, address: string) =
+proc handleClient(client: AsyncSocket, address: string) {.async.} =
   try:
 
-    let request = client.recvHttpMessage()
+    let request = await client.recvHttpMessage()
     let startLineParts = request.startLine.split(" ")
     if not startLineParts.len() == 3:
-      client.handleBadRequest()
+      await client.handleBadRequest()
       return
     if startLineParts[2] != "HTTP/1.1":
-      client.handleInvalidVersion()
+      await client.handleInvalidVersion()
       return
-    if startLineParts[0] != "GET":
-      client.handleInvalidMethod()
+    if startLineParts[0].toUpperAscii() != "GET":
+      await client.handleInvalidMethod()
       return
   
     let path = startLineParts[1]
@@ -173,27 +175,26 @@ proc handleClient(client: Socket, address: string) =
       body: body,
     )
 
-    client.send($response)
+    await client.send($response)
 
   except CatchableError as err:
     error("[REQUEST/RESPONSE] " & err.msg)
   finally:
     client.close()
 
-proc startServer() =
-  let socket = newSocket()
+proc startServer() {.async.} =
+  let socket = newAsyncSocket()
   socket.setSockOpt(OptReuseAddr, true)
 
   socket.bindAddr(Port(8080))
   socket.listen()
 
   while true:
-    var client: Socket
-    var address = ""
-    socket.acceptAddr(client, address, flags={SafeDisconn})
-    handleClient(client, address)
+    let (address, client) = await socket.acceptAddr(flags={SafeDisconn})
+    asyncCheck handleClient(client, address)
 
 if isMainModule:
   addHandler(consoleLogger)
   addHandler(fileLog)
-  startServer()
+  asyncCheck startServer()
+  runForever()
