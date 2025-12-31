@@ -1,38 +1,37 @@
 # Hexaserve
 
-A minimal static web server that serves content over six different protocols
+Hexaserve is a simple, static web server that simultaneously serves your content over 6 different protocols - partly for fun, and partly for what that says about you :).
 
-![MIT License](https://img.shields.io/badge/license-MIT-blue)
+Hexaserve uses `*.gmi` files (like a simplified Markdown) for your content, which are translated at runtime into the appropriate format for whichever format is appropriate for the protocol that the request is using. Gemtext files were chosen because they allow enough formatting to look good when translated to more stylised formats like HTML, while still being easy to reduce down to plaintext for more limited protocols.
 
-These are the protocols that this server supports:
+Currently, Hexaserve supports a small subset of the target protocols:
 
-- [x] HTTP (port 8080 for now) (HTTPS coming later)
-- [x] Gemini
+- [*] HTTP (port 8080 during early development) (HTTPS is coming later)
+- [*] Gemini
+- [*] Telnet (port 2323 during early development) (currently slow, using blocking I/O)
+- [ ] FTP
 - [ ] Gopher
 - [ ] Finger
-- [ ] FTP
-- [*] Telnet
 
-Note that Hexaserve is still in a very early state and should not be used in production. All the servers are still single-threaded, so one slow client can completely block other requests. You have been warned.
+## Build & Install
 
-## Getting Started
+To build Hexaserve:
 
-To try out hexaserve, clone the repo and run these commands:
-
-```sh
+```shell
 $ make
 $ ./install
-$ sudo ./serve
 ```
 
-NOTE: `./serve` requires sudo because some ports require special privileges to bind to.
+The `./install` command will create a self-signed SSL certificate for you to use temporarily (if you don't care about HTTPS support, you can actually keep this certificate if you wish). It will also create a Hello World page that you can quickly test with
 
-This will build the project, create an SSL certificate for your website and start the servers for every protocol. To disable a certain protocol, just delete its binary from the `bin/` directory.
+To start Hexaserve:
 
-## Contributing
+```shell
+$ ./serve
+```
 
-Contributions are welcome, especially bug reports and patches.
+This will start the server for each protocol, and restart it if it crashes. If you want to disable a certain protocol, just delete its binary from `bin/` after building.
 
-## License
+## Creating Pages
 
-This project is licensed under the [GNU AGPL-3.0](https://github.com/BeauConstrictor/Ozpex-128/blob/main/LICENSE).
+Your pages go in the `content/` directory, and are directly mapped to URLS (or the equivalent system in some of the protcols). For exmaple, `content/test/hello.gmi` could be accessed through `https://example.com/test/hello.gmi`, or `telnet 2323 /test/hello.gmi`. You can create redirects by going into `src/content.nim` and adding entries to the `redirects` table (line 17).
