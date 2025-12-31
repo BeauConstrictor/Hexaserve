@@ -104,8 +104,6 @@ proc generateHtml(page: string): string =
   var lastLineWasAListItem = false
 
   for line in page.split("\n"):
-    if line.strip() == "": continue
-
     if not lastLineWasAListItem and (line.startsWith("=> ") or line.startsWith("* ")):
       article &= "<ul>\n"
       lastLineWasAListItem = true
@@ -133,7 +131,7 @@ proc generateHtml(page: string): string =
     elif line.startsWith("* "):
       let parts = line.split(" ")
       article &= "<li>" & line[2..^1] & "</li>\n"
-    else:
+    elif line.strip().len() > 0:
       article &= "<p>" & line & "</p>\n"
 
   if lastLineWasAListItem:
