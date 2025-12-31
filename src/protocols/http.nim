@@ -136,8 +136,8 @@ proc generateHtml(page: string): string =
     else:
       article &= "<p>" & line & "</p>\n"
 
-    if lastLineWasAListItem:
-      article &= "</ul>\n"
+  if lastLineWasAListItem:
+    article &= "</ul>\n"
 
   result = htmlTemplate.replace("$CONTENT", article)
   result = result.replace("$TITLE", page.split("\n")[0].replace("# ", ""))
