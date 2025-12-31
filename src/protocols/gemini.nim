@@ -1,4 +1,4 @@
-import std/[net, uri, logging]
+import std/[asyncdispatch, asyncnet, net, uri, logging]
 
 import ../content
 
@@ -13,10 +13,10 @@ proc getStatusNumber(status: statusCode): (string, bool) =
     of scAccessDenied: ("59", false)
     of scUnhandledError: ("40", false)
 
-proc handleClient(client: Socket, address: string) =
+proc handleClient(client: AsyncSocket, address: string) {.async.} =
   try:
 
-    let urlText = client.recvLine(timeout=1000, maxLength=1024)
+    let urlText = await client.recvLine(maxLength=1024)
     let url = parseUri(decodeUrl(urlText))
     let (page, status) = getPage(url.path)
 
@@ -24,23 +24,23 @@ proc handleClient(client: Socket, address: string) =
 
     let (statusNumber, shouldGiveBody) = getStatusNumber(status)
 
-    client.send(statusNumber & " ")
+    await client.send(statusNumber & " ")
     if not shouldGiveBody:
-      client.send(($status)[2..^1] & " for resource '" & url.path & "'")
+      await client.send(($status)[2..^1] & " for resource '" & url.path & "'")
     else:
-      client.send("text/gemini")
-    client.send("\r\n")
+      await client.send("text/gemini")
+    await client.send("\r\n")
 
     if shouldGiveBody:
-      client.send(page)
+      await client.send(page)
 
   except CatchableError as err:
     error("[REQUEST/RESPONSE] " & err.msg)
   finally:
     client.close()
 
-proc startServer() =
-  let socket = newSocket()
+proc startServer() {.async.} =
+  let socket = newAsyncSocket()
   socket.setSockOpt(OptReuseAddr, true)
 
   let ctx = newContext(certFile="ssl/cert.pem", keyFile="ssl/key.pem")
@@ -49,13 +49,12 @@ proc startServer() =
   socket.listen()
 
   while true:
-    var client: Socket
-    var address = ""
-    socket.acceptAddr(client, address, flags={SafeDisconn})
+    let (address, client) = await socket.acceptAddr(flags={SafeDisconn})
     ctx.wrapConnectedSocket(client, handshakeAsServer, "localhost")
-    handleClient(client, address)
+    await handleClient(client, address)
 
 if isMainModule:
   addHandler(consoleLogger)
   addHandler(fileLog)
-  startServer()
+  asyncCheck startServer()
+  runForever()
