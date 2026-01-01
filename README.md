@@ -6,9 +6,9 @@ Hexaserve uses `*.gmi` files (like a simplified Markdown) for your content, whic
 
 Currently, Hexaserve supports a small subset of the target protocols:
 
-- [x] HTTP (port 8080 during early development) (HTTPS is coming later)
+- [x] HTTP
 - [x] Gemini
-- [x] Telnet (port 2323 during early development) (currently slow, using blocking I/O)
+- [x] Telnet (currently vulnerable, disable if using in production)
 - [ ] FTP
 - [ ] Gopher
 - [ ] Finger
