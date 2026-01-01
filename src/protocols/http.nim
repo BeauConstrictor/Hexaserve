@@ -1,9 +1,10 @@
-import std/[asyncnet, asyncdispatch, logging, strutils, tables, times]
+import std/[asyncnet, asyncdispatch, net, logging, strutils, tables, times]
 
 import ../content
 
 const
-  port = 8080
+  port = 5000
+  useHttps = true
 
 type
   HttpMessage = object
@@ -12,6 +13,7 @@ type
     body: string
 
   HttpError = object of ValueError
+
 
 const
   htmlTemplate = staticRead("../template.html")
@@ -201,6 +203,10 @@ proc startServer() {.async.} =
   let socket = newAsyncSocket()
   socket.setSockOpt(OptReuseAddr, true)
 
+  var ctx: SslContext
+  if useHttps:
+    ctx = newContext(certFile="ssl/cert.pem", keyFile="ssl/key.pem")
+
   socket.bindAddr(Port(port))
   socket.listen()
 
@@ -208,6 +214,8 @@ proc startServer() {.async.} =
 
   while true:
     let (address, client) = await socket.acceptAddr(flags={SafeDisconn})
+    if useHttps:
+      asyncnet.wrapConnectedSocket(ctx, client, handshakeAsServer, "localhost")
     asyncCheck handleClient(client, address)
 
 if isMainModule:
