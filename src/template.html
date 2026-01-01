@@ -289,7 +289,8 @@
                 existingIdenticon.remove();
             }
 
-            const identicon = createIdenticon(bg, colours, location.hostname);
+            const hostnameFull = `${location.hostname}:${location.port}`;
+            const identicon = createIdenticon(bg, colours, hostnameFull);
             identicon.classList.add("icon");
             const iconContainer = document.querySelector(".header-content");
             iconContainer.classList.remove("js-disabled");
