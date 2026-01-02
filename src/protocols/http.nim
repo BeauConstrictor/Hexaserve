@@ -3,7 +3,7 @@ import std/[asyncnet, asyncdispatch, net, logging, strutils, tables, times]
 import ../content
 
 const
-  port = 5000
+  port = 5500
   useHttps = true
 
 type
