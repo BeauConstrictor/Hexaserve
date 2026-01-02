@@ -7,7 +7,7 @@ const
 
 # =------------------ #
 
-import std/[asyncdispatch, asyncnet, strutils, logging, openssl]
+import std/[asyncdispatch, asyncnet, strutils, logging, uri]
 
 import ../content
 
@@ -74,13 +74,26 @@ proc translateToGophermap(gemtext: string): string =
     elif line.startsWith("=> "):
       let parts = line.split(" ")
 
-      # TODO: support links to other hosts
-      let path = parts[1]
-      var name = path
+      let target = parts[1]
+      let url = parseUri(target)
+      var name = target
       if parts.len() > 2:
         name = parts[2..^1].join(" ")
 
-      result &= "1" & name & "\t" & path & "\t" & host & "\t" & $port & "\r\n"
+      if url.scheme == "gopher":
+        var port = url.port
+        if port == "": port = "70"
+
+        result &= "1" & name & "\t" & url.path & "\t" & url.hostname & "\t"
+        result &= port & "\r\n"
+      elif url.isAbsolute():
+        var port = url.port
+        if port == "": port = "70"
+        result &= "h" & name & "\tURL:" & $url & "\t" & url.hostname & "\t" 
+        result &= port & "\r\n"
+      else:
+        result &= "1" & name & "\t" & target & "\t" & host & "\t" & $port
+        result &= "\r\n"
     elif line.startsWith("# "):
       let text = line[2..^1]
       result &= "i" & "#".repeat(text.len()) & "\tfake\t(NULL)\t0\r\n"
