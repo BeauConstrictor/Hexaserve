@@ -178,7 +178,7 @@ proc handleClient(client: AsyncSocket, address: string) {.async.} =
     let (page, status) = getPage(path)
     let body = generateHtml(request.header["host"], page)
 
-    info("[REQUEST] " & address & " " & path)
+    info("[REQUEST]          " & address & " " & path)
 
     let response = HttpMessage(
       startLine: "HTTP/1.1 " & getStatusLine(status),
@@ -210,7 +210,7 @@ proc startServer() {.async.} =
   socket.bindAddr(Port(port))
   socket.listen()
 
-  info("[START] Listening on port " & $port)
+  info("[START]            Listening on port " & $port)
 
   while true:
     let (address, client) = await socket.acceptAddr(flags={SafeDisconn})

@@ -17,13 +17,13 @@ proc handleClient(client: Socket, address: string) =
     client.send("\e[2J\e[H\n")
     client.send(welcomeMessage)
 
-    info("[REQUEST] " & address & " ...")
+    info("[CONNECTION]       " & address & " ...")
 
     let path = client.recvLine()
     client.send("Fetching " & path & "...\n")
     let (page, _) = getPage(path)
 
-    info("[REQUEST] " & address & " " & path)
+    info("[REQUEST]          " & address & " " & path)
 
     client.send(page)
 
@@ -39,7 +39,7 @@ proc startServer() =
   socket.bindAddr(Port(port))
   socket.listen()
 
-  info("[START] Listening on port " & $port)
+  info("[START]            Listening on port " & $port)
 
   while true:
     var client: Socket

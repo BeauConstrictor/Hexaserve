@@ -23,7 +23,7 @@ proc handleClient(client: AsyncSocket, address: string) {.async.} =
     let url = parseUri(decodeUrl(urlText))
     let (page, status) = getPage(url.path)
 
-    info("[REQUEST] " & address & " " & url.path)
+    info("[REQUEST]         " & address & " " & url.path)
 
     let (statusNumber, shouldGiveBody) = getStatusNumber(status)
 
@@ -51,7 +51,7 @@ proc startServer() {.async.} =
   socket.bindAddr(Port(port))
   socket.listen()
 
-  info("[START] Listening on port " & $port)
+  info("[START]            Listening on port " & $port)
 
   while true:
     let (address, client) = await socket.acceptAddr(flags={SafeDisconn})
