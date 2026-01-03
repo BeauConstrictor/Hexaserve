@@ -2,7 +2,7 @@
 #    GOPHER CONFIG    #
 
 const
-  port = 5500
+  port = 443
   useHttps = true
 
 # =------------------ #

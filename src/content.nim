@@ -1,5 +1,16 @@
 import std/[os, strutils, tables]
 
+# ------------------- #
+#   REDIRECT CONFIG   #
+
+const
+  redirects = {
+    "": "index.gmi",
+    "/": "index.gmi",
+  }.toTable
+
+# ------------------- #
+
 type
   PathTraversalError = object of ValueError
 
@@ -13,11 +24,6 @@ const
   unhandledErrMsg = staticRead("errs/unhandled.gmi")
   pathTraversalErrMsg = staticRead("errs/traversal.gmi")
   notFoundErrMsg = staticRead("errs/notfound.gmi")
-
-  redirects = {
-    "": "index.gmi",
-    "/": "index.gmi",
-  }.toTable
 
 proc getPath(originalLocation: string): string =
   var location = originalLocation

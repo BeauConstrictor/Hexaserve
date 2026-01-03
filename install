@@ -1,6 +1,13 @@
 #!/bin/env sh
 
+mkdir -p ./content
+mkdir -p ./ssl
+mkdir -p ./logs
+
 touch logs/gemini.txt
+touch logs/gopher.txt
+touch logs/finger.txt
+touch logs/http.txt
 touch logs/runner.txt
 
 echo "Hello, world!" > content/index.gmi

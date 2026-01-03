@@ -2,7 +2,7 @@
 #    GOPHER CONFIG    #
 
 const
-  port = 7070
+  port = 70
   host = "localhost"
 
 # =------------------ #

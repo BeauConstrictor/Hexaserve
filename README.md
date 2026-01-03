@@ -11,25 +11,31 @@ Currently, Quadraserve supports a small subset of the target protocols:
 - [x] Gopher
 - [ ] Finger
 
-## Build & Install
+## Setup
 
-To build Quadraserve:
+To start using Quadraserve, first clone the Github repo:
+
+```shell
+$ git clone https://github.com/BeauConstrictor/Quadraserve
+$ cd Quadraserve
+```
+
+Once you are have cloned Quadraserve, you can set up logs and SSL certificates like so:
+
+```shell
+$ sh ./install
+```
+
+This will prompt you to enter some information to include in the SSL certificate, most of which you can leave blank by hitting return. The only required field is *Common Name*, where you should enter the hostname that you will use for your website.
+
+Finally, to build and run Quadraserve, run these:
 
 ```shell
 $ make
-$ ./install
+$ sudo ./ALLOW_LOW_PORTS # allows the binaries to bind to low ports (eg. 443, 70, 79)
+$ ./serve 
 ```
-
-The `./install` command will create a self-signed SSL certificate for you to use temporarily (if you don't care about HTTPS support, you can actually keep this certificate if you wish). It will also create a Hello World page that you can quickly test with
-
-To start Quadraserve:
-
-```shell
-$ ./serve
-```
-
-This will start the server for each protocol, and restart it if it crashes. If you want to disable a certain protocol, just delete its binary from `bin/` after building.
 
 ## Creating Pages
 
-Your pages go in the `content/` directory, and are directly mapped to URLS (or the equivalent system in some of the protcols). For exmaple, `content/test/hello.gmi` could be accessed through `https://example.com/test/hello.gmi`, or `telnet 2323 /test/hello.gmi`. You can create redirects by going into `src/content.nim` and adding entries to the `redirects` table (line 17).
+Your pages go in the `content/` directory, and are directly mapped to URLS (or the equivalent system in some of the protcols). For exmaple, `content/test/hello.gmi` could be accessed through `https://example.com/test/hello.gmi`, or `telnet 2323 /test/hello.gmi`. You can create redirects by going into `src/content.nim` and adding entries to the `redirects`.
