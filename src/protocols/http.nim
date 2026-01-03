@@ -190,7 +190,7 @@ proc handleClient(client: AsyncSocket, address: string) {.async.} =
       header: {
         "Content-Length": $len(body),
         "Connection": "close",
-        "Server": "Hexaserve",
+        "Server": "Quadraserve",
         "Content-Type": "text/html; charset=utf-8",
         "Date": getHttpTimestamp(),
       }.toTable,

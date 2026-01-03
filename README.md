@@ -1,21 +1,19 @@
-# Hexaserve
+# Quadraserve
 
-Hexaserve is a simple, static web server that simultaneously serves your content over 6 different protocols - partly for fun, and partly for what that says about you :).
+Quadraserve is a simple, static web server that simultaneously serves your content over 6 different protocols - partly for fun, and partly for what that says about you :).
 
-Hexaserve uses `*.gmi` files (like a simplified Markdown) for your content, which are translated at runtime into the appropriate format for whichever format is appropriate for the protocol that the request is using. Gemtext files were chosen because they allow enough formatting to look good when translated to more stylised formats like HTML, while still being easy to reduce down to plaintext for more limited protocols.
+Quadraserve uses `*.gmi` files (like a simplified Markdown) for your content, which are translated at runtime into the appropriate format for whichever format is appropriate for the protocol that the request is using. Gemtext files were chosen because they allow enough formatting to look good when translated to more stylised formats like HTML, while still being easy to reduce down to plaintext for more limited protocols.
 
-Currently, Hexaserve supports a small subset of the target protocols:
+Currently, Quadraserve supports a small subset of the target protocols:
 
 - [x] HTTP
 - [x] Gemini
-- [x] Telnet (currently vulnerable, disable if using in production)
-- [ ] FTP
-- [ ] Gopher
+- [x] Gopher
 - [ ] Finger
 
 ## Build & Install
 
-To build Hexaserve:
+To build Quadraserve:
 
 ```shell
 $ make
@@ -24,7 +22,7 @@ $ ./install
 
 The `./install` command will create a self-signed SSL certificate for you to use temporarily (if you don't care about HTTPS support, you can actually keep this certificate if you wish). It will also create a Hello World page that you can quickly test with
 
-To start Hexaserve:
+To start Quadraserve:
 
 ```shell
 $ ./serve
