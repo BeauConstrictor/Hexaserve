@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+if ! command -v setcap >/dev/null; then
+    echo "setcap not found, please install libcap2-bin"
+    exit 1
+fi
+
+# PLEASE READ:
+
+# Most of the protocols that this server supports are designed to use ports
+# <1024. Unix operating systems treat this ports specially, so they require
+# elevated privileges to bind to.
+
+# * Finger: requires port 79
+# * Gopher: defaults to port 70
+# * HTTPS: defaults to port 443
+# * HTTP defaults to port 80
+
+# You can change any of these ports in the configuration section at the top of the
+# file in 'src/protocols/<protocol>.nim', and you can then manually select that
+# port in your client as well, like this:
+
+# https://localhost:5500/
+
+# This will use the HTTP (in https mode, see the configuration options) server,
+# but connect to it through port 5500 instead, which does not require special
+# permissions. Many finger clients do not allow you to select an arbitrary port to
+# connect to. To resolve this, use the steps below.
+
+# When using Quadraserve publicly, you usually do not want to tell users to put a
+# special port in the URL of your website. To allow Quadraserve to use the
+# standard ports, select the proper port from the config section of each
+# protocol's source file and run 'make'. If you try to run './serve' now though, 
+# you will get some kind of permission error. To prevent that, run this file as
+# a shell script, or use this command:
+
+for f in bin/*; do
+    sudo setcap 'cap_net_bind_service=+ep' "$f"
+done
+
+# This will allow all the protocols to bind to ports <1024 without giving them
+# full root permissions in order to mitigate the effects of a potential security
+# vulnerability.
