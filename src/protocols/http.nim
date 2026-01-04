@@ -5,7 +5,7 @@ const
   useHttp = true
   httpPort = 80
 
-  useHttps = true
+  useHttps = false
   httpsPort = 443
 
 # =------------------ #
