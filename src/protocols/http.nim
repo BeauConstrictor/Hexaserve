@@ -28,7 +28,7 @@ const
 
 var
   consoleLogger = newConsoleLogger(fmtStr="HTTP/$levelname   ")
-  fileLog = newFileLogger("logs/gemini.txt", levelThreshold=lvlError) 
+  fileLog = newFileLogger("logs/http.txt", levelThreshold=lvlError) 
 
 proc `$`(msg: HttpMessage): string =
   result &= msg.startLine & "\r\n"
@@ -210,8 +210,8 @@ proc handleClient(client: AsyncSocket, address: string) {.async.} =
 proc startServer(useTls: bool, port: uint) {.async.} =
   if useTls and not
    (fileExists("ssl/https.cert") and fileExists("ssl/https.key")):
-    error("[START]            Missing './ssl/https.key' and/or './ssl/https.cert'")
-
+    error "[START]            Missing './ssl/https.key' and/or './ssl/https.cert'"
+    while true: discard
 
   let socket = newAsyncSocket()
   socket.setSockOpt(OptReuseAddr, true)

@@ -6,7 +6,7 @@ const
 
 # =------------------ #
 
-import std/[asyncdispatch, asyncnet, net, uri, logging]
+import std/[asyncdispatch, asyncnet, net, uri, logging, os]
 
 import ../content
 
@@ -48,6 +48,10 @@ proc handleClient(client: AsyncSocket, address: string) {.async.} =
     client.close()
 
 proc startServer() {.async.} =
+  if not (fileExists("ssl/gemini.cert") and fileExists("ssl/gemini.key")):
+    error "[START]            Missing './ssl/gemini.key' and/or './ssl/gemini.cert'"
+    while true: discard
+
   let socket = newAsyncSocket()
   socket.setSockOpt(OptReuseAddr, true)
 

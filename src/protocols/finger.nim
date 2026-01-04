@@ -14,7 +14,7 @@ import ../content
 
 var
   consoleLogger = newConsoleLogger(fmtStr="FINGER/$levelname ")
-  fileLog = newFileLogger("logs/gemini.txt", levelThreshold=lvlError)
+  fileLog = newFileLogger("logs/finger.txt", levelThreshold=lvlError)
 
 proc wrap(text: string, width: int): string =
   var lines = newSeq[string]()
