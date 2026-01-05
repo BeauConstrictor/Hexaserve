@@ -9,7 +9,7 @@ Currently, Quadraserve supports a small subset of the target protocols:
 - [x] HTTP
 - [x] Gemini
 - [x] Gopher
-- [ ] Finger
+- [x] Finger
 
 ## Setup
 

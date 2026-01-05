@@ -1,3 +1,19 @@
 # Path Traversal Detected
 
+```An ASCII art image of a man staring deeply into his computer screen (source: Joan G. Stark)
+                 ___
+                / ,-\      _ ___
+               | (  '\    |-|   |._
+        ___     )_ _/     | |   |  |
+       [___]   /  `\____  | |   |_.'
+       |  ^|  /  \_____/) |-|___|
+       |   | /    /   _:::_))_(___
+       |   |/'-._/_   |___________|
+       '-;_|\_____ `\ ||"""""""""||
+         | `######|_|_||         ||
+         \ ._  _,'{~-_}|         ||
+         _)   (   {-__}|         ||
+    jgs /______`\ |_,__)         ||
+```
+
 For security reasons, we can't let you visit that page.
