@@ -15,6 +15,8 @@ echo "Hello, world!" > content/index.gmi
 echo "Create an SSL certificate for your new server:"
 
 openssl req -x509 -nodes -newkey rsa:4096 \
-    -keyout "./ssl/key.pem" \
-    -out "./ssl/cert.pem" \
+    -keyout "./ssl/gemini.key" \
+    -out "./ssl/gemini.cert" \
     -days 36500
+
+echo "You must create HTTPS certificates separately, using a tool like certbot. Because of this, HTTPS is disabled by default - to reenabled it, go to protocols/http.nim and change useHttps to 'true'." | fmt
