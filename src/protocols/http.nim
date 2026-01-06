@@ -2,10 +2,26 @@
 #     HTTP CONFIG     #
 
 const
+  # If you do not want to allow unencrypted connections to your server, disable
+  # this. Note that Quadraserve only uses static pages, so unencrypted
+  # connections pose little-to-no risk and allow older machines to more easily
+  # access your website.
   useHttp = true
+  # if this port is below 1024, then you will have to run ./ALLOW_LOW_PORTS and
+  # and enter your password in order to give Quadraserver permission to use the
+  # port. The default port below is recommended and means that users can simply
+  # enter no port at all when visiting your site. For testing, you may want to
+  # set this port higher if you do not currently have admin permissions. This
+  # port setting is for insecure connections.
   httpPort = 80
 
+  # Select whether or not to allow encrypted connecftions. Users will get a
+  # warning if you disable this, but they will also get a warning if you do not
+  # set up proper TLS certificates for this as well. Look into 'certbot' to get
+  # certificates.
   useHttps = false
+  # The same applies here as to the above port setting, but to secure
+  # connections instead.
   httpsPort = 443
 
 # =------------------ #

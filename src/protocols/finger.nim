@@ -2,8 +2,12 @@
 #    FINGER CONFIG    #
 
 const
+  # if this port is below 1024, then you will have to run ./ALLOW_LOW_PORTS and
+  # and enter your password in order to give Quadraserver permission to use the
+  # port. The default port below is recommended and means that users can simply
+  # enter no port at all when visiting your site. For testing, you may want to
+  # set this port higher if you do not currently have admin permissions.
   port = 79
-  host = "localhost"
 
 # =------------------ #
 
